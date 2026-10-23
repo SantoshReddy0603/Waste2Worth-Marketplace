@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f5ef" />
+    <meta name="description" content="Waste2Worth: an AI procurement agent that sources reusable industrial surplus, negotiates with supplier agents and settles through PayPal." />
+    <title>Waste2Worth — Surplus Agent</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/agent.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="#discover" data-view-link="discover" aria-label="Waste2Worth home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-name">waste<span>2</span>worth</span>
+        </a>
+        <div class="workspace-label">WORKSPACE</div>
+        <nav class="nav-list">
+          <button class="nav-item active" data-view="discover"><span class="nav-icon">⌕</span>Discover<span class="nav-count" id="nav-listing-count">30</span></button>
+          <button class="nav-item supplier-only" data-view="listings"><span class="nav-icon">▧</span>My listings<span class="nav-count nav-alert" id="nav-inbox-count" hidden>0</span></button>
+          <button class="nav-item supplier-only" data-view="new-listing"><span class="nav-icon plus">＋</span>Post material</button>
+          <button class="nav-item" data-view="orders"><span class="nav-icon">↗</span>Deals<span class="nav-count" id="nav-deal-count" hidden>0</span></button>
+          <button class="nav-item" data-view="impact"><span class="nav-icon">◒</span>Impact</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="sidebar-tip">
+            <span class="tip-icon">✳</span>
+            <p>Tell the agent what you need. It finds surplus, negotiates and hands you a PayPal approval.</p>
+            <span class="tip-link" id="stack-line">PayPal Orders · Payouts · Refunds</span>
+          </div>
+          <div class="user-card" id="user-card">
+            <span class="avatar" id="user-avatar">PS</span>
+            <span class="user-lines"><b id="user-name">Priya Shah</b><small id="user-org">Northwind Packaging Lab</small></span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div class="crumb"><span>Workspace</span><b>/</b><strong id="crumb-current">Discover</strong></div>
+          <div class="topbar-actions">
+            <span class="status-pill" id="ai-pill" title="AI provider"><i></i> AI: rules</span>
+            <span class="status-pill" id="paypal-pill" title="Payments"><i></i> Demo payments</span>
+            <label class="role-select-wrap" for="role-select"><span class="sr-only">Act as</span><select id="role-select" aria-label="Switch demo persona"></select></label>
+          </div>
+        </header>
+
+        <div class="content-wrap">
+          <section class="view active" id="view-discover" aria-labelledby="discover-title">
+            <div class="welcome-row">
+              <div><p class="eyebrow"><span class="eyebrow-line"></span> SURPLUS → SUPPLY</p><h1 id="discover-title">Useful material<br /><em>finds a new purpose.</em></h1><p class="welcome-copy">An AI procurement agent sources clean industrial surplus, negotiates with the supplier's agent and settles through PayPal. Funds are held until you confirm pickup.</p></div>
+              <div class="hero-art" aria-hidden="true">
+                <span class="orbit orbit-one"></span><span class="orbit orbit-two"></span>
+                <div class="art-card art-card-one"><b>REUSE</b><span>local stock</span><i>↗</i></div>
+                <div class="art-card art-card-two"><span class="art-bubble">✳</span><b>agent deal</b><small>paid via PayPal</small></div>
+                <div class="art-loop">↻</div>
+              </div>
+            </div>
+
+            <div class="metrics-row" aria-label="Marketplace overview">
+              <article class="metric-card"><span class="metric-icon leaf-icon">✳</span><div><span>Available materials</span><strong id="metric-materials">30</strong></div><small class="metric-note">clean surplus</small></article>
+              <article class="metric-card"><span class="metric-icon match-icon">⌘</span><div><span>Deals settled via PayPal</span><strong id="metric-deals">0</strong></div><small class="metric-note">held until pickup</small></article>
+              <article class="metric-card"><span class="metric-icon impact-icon">↗</span><div><span>Listed surplus</span><strong id="metric-kg">6.8<span>t</span></strong></div><small class="metric-note">supplier-described</small></article>
+            </div>
+
+            <section class="match-panel" aria-labelledby="match-title">
+              <div class="match-panel-copy"><div class="ai-label"><span>✳</span> SURPLUS AGENT <span class="assist-beta" id="agent-provider">RULES</span></div><h2 id="match-title">What do you need to source?</h2><p>Give a brief with material, use, quantity and budget. <b>Find matches</b> ranks stock with reasons. <b>Send agent</b> also negotiates a deal for you to approve in PayPal.</p><div class="assist-disclaimer">The agent cannot pay on its own: you approve every payment. Confirm material details at pickup.</div></div>
+              <form id="match-form" class="match-form"><label for="need-input">Your brief</label><div class="prompt-field"><span class="prompt-spark">✳</span><input id="need-input" type="text" value="200 kg clean cotton fabric for protective packaging, under $300, near Austin" placeholder="e.g. 80 kg kraft board for shipping inserts under $90" autocomplete="off" maxlength="300" /></div><div class="agent-actions"><button type="submit" class="search-submit ghost-submit">Find matches <span>⌕</span></button><button type="button" class="search-submit" id="agent-run">Send agent <span>↗</span></button></div><div class="prompt-hints"><span>Try:</span><button type="button" data-prompt="60 kg untreated hardwood offcuts for small furniture under $150">hardwood under $150</button><button type="button" data-prompt="300 kg kraft board for shipping inserts under $230 near Dallas">kraft inserts</button><button type="button" data-prompt="40 kg clean felt for acoustic sample panels">felt panels</button></div></form>
+            </section>
+
+            <section class="agent-panel" id="agent-panel" hidden aria-live="polite">
+              <div class="agent-head"><div><p class="eyebrow eyebrow-small">AGENT RUN</p><h2 id="agent-title">Surplus Agent is working…</h2></div><button class="text-button" id="agent-close" aria-label="Close agent run">Close ×</button></div>
+              <ol class="agent-trace" id="agent-trace"></ol>
+              <div class="agent-result" id="agent-result" hidden></div>
+            </section>
+
+            <div class="section-heading listing-heading"><div><p class="eyebrow eyebrow-small">THE EXCHANGE</p><h2>Browse available materials <span id="listing-result-count" class="result-count">30</span></h2></div><div class="listing-tools"><label class="sort-label" for="sort-select">Sort by</label><select id="sort-select" class="sort-select"><option value="match">Best match</option><option value="price">Lowest cost</option><option value="quantity">Most available</option><option value="new">Recently listed</option></select><button class="filter-toggle" id="filter-toggle" aria-expanded="false">Filters <span class="filter-icon">☷</span></button></div></div>
+            <div class="filter-panel" id="filter-panel" hidden><div class="filter-group"><span>Material</span><div class="category-chips" role="group" aria-label="Filter by material"><button class="category-chip selected" data-category="all">All materials</button><button class="category-chip" data-category="textile">Textiles</button><button class="category-chip" data-category="wood">Wood</button><button class="category-chip" data-category="packaging">Packaging</button></div></div><div class="filter-group filter-search"><label for="catalog-search">Search materials</label><div class="inline-search"><span>⌕</span><input id="catalog-search" type="search" placeholder="Name, use or location" /><button id="clear-search" aria-label="Clear search">×</button></div></div></div>
+            <div class="match-summary" id="match-summary" hidden><span class="summary-badge">✳</span><span id="match-summary-text"></span><button id="clear-match">Clear match</button></div>
+            <div class="listing-grid" id="listing-grid" aria-live="polite"></div>
+            <div class="catalog-footnote"><span class="footnote-dot"></span> Demo listings, suppliers and prices are synthetic. Freight is an estimate for comparison, not a carrier quote.</div>
+          </section>
+
+          <section class="view" id="view-listings" aria-labelledby="my-listings-title">
+            <div class="page-title-row"><div><p class="eyebrow"><span class="eyebrow-line"></span> SUPPLIER SPACE</p><h1 id="my-listings-title">My listings</h1><p class="welcome-copy">Set a negotiation floor once. Your supplier agent answers buyer agents within it, or leaves offers for you to review.</p></div><button class="primary-button" data-view="new-listing">＋ Post a material</button></div>
+            <div class="seller-stats" id="seller-stats"></div>
+            <div class="section-heading compact-heading"><div><p class="eyebrow eyebrow-small">OFFER INBOX</p><h2>Offers waiting for you <span id="inbox-count" class="result-count">0</span></h2></div><span class="soft-tag">Manual review listings land here</span></div>
+            <div class="deal-list" id="offer-inbox"></div>
+            <div class="section-heading compact-heading" style="margin-top:26px"><div><p class="eyebrow eyebrow-small">YOUR MATERIALS</p><h2>Listings <span id="seller-listing-count" class="result-count">0</span></h2></div><span class="soft-tag">Floor = lowest price your agent may accept</span></div>
+            <div class="seller-list" id="seller-list"></div>
+          </section>
+
+          <section class="view" id="view-new-listing" aria-labelledby="new-listing-title">
+            <div class="page-title-row"><div><p class="eyebrow"><span class="eyebrow-line"></span> SUPPLIER SPACE</p><h1 id="new-listing-title">Post a material</h1><p class="welcome-copy">Snap a photo. The vision model drafts the listing and flags anything unsafe; you review every field before publishing.</p></div></div>
+            <div class="listing-form-layout"><form id="new-listing-form" class="form-card">
+              <div class="form-section-title"><span class="form-step">1</span><div><h2>What do you have?</h2><p>A clear photo plus a few words is enough for a draft.</p></div></div>
+              <div class="photo-drop" id="photo-drop"><input id="listing-photo" type="file" accept="image/*" aria-label="Upload a material photo" /><img id="photo-preview" alt="" hidden /><span class="photo-icon">⌑</span><b>Add a material photo</b><small>Resized in your browser before upload. JPEG, PNG or HEIC from your phone.</small><span class="photo-filename" id="photo-filename"></span></div>
+              <div class="form-grid"><label class="field full-field">Listing name<input id="listing-title" required maxlength="70" placeholder="e.g. Clean cotton canvas offcuts" /></label><label class="field">Material family<select id="listing-category" required><option value="">Choose a material</option><option value="textile">Textile offcuts</option><option value="wood">Wood offcuts</option><option value="packaging">Packaging scraps</option></select></label><label class="field">Material subtype<input id="listing-subtype" maxlength="50" placeholder="e.g. Cotton canvas" /></label><label class="field full-field">Description<textarea id="listing-description" rows="3" maxlength="400" placeholder="Color, shape, dimensions, condition, and what you know about the source…"></textarea><small>Describe only properties you can support. Avoid claiming lab-tested composition or certification.</small></label></div>
+              <div class="ai-enrich-row"><span class="ai-enrich-icon">✳</span><div><b>Draft it with AI</b><small id="enrich-caption">Uses the photo and your notes. It never verifies composition or safety.</small></div><button type="button" id="enrich-button" class="outline-button">Suggest details <span>↗</span></button></div>
+              <div class="suggestion-box" id="suggestion-box" hidden></div>
+              <div class="form-section-title second-form-section"><span class="form-step">2</span><div><h2>Quantity, price & negotiation</h2><p>Your agent accepts offers at or above the floor; bulk orders get the floor price.</p></div></div>
+              <div class="form-grid"><label class="field">Available quantity<div class="number-unit"><input id="listing-quantity" type="number" min="1" step="1" required placeholder="120" /><select id="listing-unit" aria-label="Quantity unit"><option value="kg">kg</option><option value="pieces">pieces</option><option value="meters">meters</option></select></div></label><label class="field">List price per unit<div class="money-field"><span>$</span><input id="listing-price" type="number" min="0.01" step="0.01" required placeholder="1.25" /></div></label><label class="field">Negotiation floor per unit<div class="money-field"><span>$</span><input id="listing-floor" type="number" min="0.01" step="0.01" placeholder="85% of list" /></div></label><label class="field">Pickup location<input id="listing-location" required maxlength="70" placeholder="City, State" /></label><label class="field">Condition<select id="listing-condition"><option>Clean · sorted</option><option>Dry · clean</option><option>Untreated · dry</option><option>Mixed · needs review</option></select></label><label class="field toggle-field"><span>Supplier agent</span><span class="toggle-line"><input id="listing-auto" type="checkbox" checked /> Auto-negotiate within my floor</span></label></div>
+              <label class="safety-check"><input id="clean-declaration" type="checkbox" required /><span><b>I confirm this material is clean and nonhazardous.</b><small>Materials with chemical, biological, sharp or unknown contamination must not be listed for purchase.</small></span></label>
+              <div class="form-actions"><button type="button" class="text-button" data-view="listings">Cancel</button><button type="submit" class="primary-button">Review & publish <span>↗</span></button></div>
+            </form><aside class="form-aside"><div class="aside-note"><span>✳</span><div><b>AI drafts, you decide</b><p>Visible attributes and likely uses are suggestions. The server re-checks every listing; AI can only make the safety check stricter.</p></div></div><div class="aside-note aside-note-plain"><b>Keep it safe and useful</b><p>Only clean textile offcuts, untreated wood offcuts and packaging scraps. Uncertain listings go to review and stay out of search.</p></div><div class="aside-note aside-note-plain"><b>How you get paid</b><p>Buyers pay through PayPal. Waste2Worth holds the funds until the buyer confirms pickup, then sends your payout minus a 5% platform fee.</p></div></aside></div>
+          </section>
+
+          <section class="view" id="view-orders" aria-labelledby="orders-title">
+            <div class="page-title-row"><div><p class="eyebrow"><span class="eyebrow-line"></span> OFFERS → PAYMENT → PAYOUT</p><h1 id="orders-title">Deals</h1><p class="welcome-copy" id="orders-copy">Every offer, counter, PayPal capture, pickup and supplier payout, with a full audit trail.</p></div></div>
+            <div class="orders-summary" id="orders-summary"></div>
+            <div class="deal-list" id="deal-list"></div>
+            <div class="empty-state" id="orders-empty" hidden><span>↗</span><h2>No deals yet</h2><p>Send the Surplus Agent with a brief, or open a listing and make an offer.</p><button class="primary-button" data-view="discover">Find material <span>↗</span></button></div>
+          </section>
+
+          <section class="view" id="view-impact" aria-labelledby="impact-title">
+            <div class="page-title-row"><div><p class="eyebrow"><span class="eyebrow-line"></span> MEASURE WHAT MOVES</p><h1 id="impact-title">Impact, in context.</h1><p class="welcome-copy">Material that entered a paid reuse transaction, kept separate from catalog potential.</p></div><span class="estimate-tag"><span>◌</span> Transaction-based</span></div>
+            <div class="impact-hero"><div><span class="impact-kicker">MATERIAL IN PAID REUSE DEALS</span><strong id="impact-potential">0 <small>kg</small></strong><p id="impact-sub">Quantities from paid deals. This is not verified diversion.</p></div><div class="impact-illustration" aria-hidden="true"><div class="ring ring-a"></div><div class="ring ring-b"></div><span>↻</span><i>kg</i></div></div>
+            <div class="impact-cards" id="impact-cards"></div>
+            <div class="impact-explain"><span class="info-icon">i</span><p><b>How to read these numbers</b> Paid quantities come from PayPal-captured (or clearly marked demo) deals. A payment does not prove physical pickup, reuse or avoided emissions, so Waste2Worth does not calculate carbon savings or certify composition.</p></div>
+          </section>
+        </div>
+        <footer class="footer"><span>Waste2Worth <b>·</b> Surplus Agent</span><span>Built for the PayPal AI Hackathon · <a href="https://github.com/car-ui/waste2worth" target="_blank" rel="noreferrer">Source ↗</a></span></footer>
+      </main>
+    </div>
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+    <dialog id="detail-dialog" class="app-dialog"></dialog>
+    <dialog id="checkout-dialog" class="app-dialog checkout-dialog"></dialog>
+  </body>
+</html>
