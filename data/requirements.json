@@ -1,0 +1,14 @@
+[
+  {"id":"req-01","buyer":"Northstar Pack Lab","useCase":"Protective inserts for small electronics","category":"packaging","quantity":80,"budgetMinor":18000,"location":"Austin, TX","notes":"Dry, clean and easy to cut by hand."},
+  {"id":"req-02","buyer":"Juniper Home Goods","useCase":"Short hardwood pieces for sample furniture","category":"wood","quantity":45,"budgetMinor":22000,"location":"Austin, TX","notes":"Prefer untreated stock with a range of lengths."},
+  {"id":"req-03","buyer":"Morrow Workshop","useCase":"Cotton fabric for sewn product prototypes","category":"textile","quantity":60,"budgetMinor":19000,"location":"Austin, TX","notes":"Color variation is fine; composition should be stated as an estimate."},
+  {"id":"req-04","buyer":"Parcel & Pine","useCase":"Kraft board dividers for reusable shipping boxes","category":"packaging","quantity":120,"budgetMinor":21000,"location":"Dallas, TX","notes":"Dry sheets or flat offcuts preferred."},
+  {"id":"req-05","buyer":"Studio Common","useCase":"Felt and textile acoustic sample panels","category":"textile","quantity":35,"budgetMinor":16000,"location":"Houston, TX","notes":"Need soft, dense materials; no fire-rating claims required."},
+  {"id":"req-06","buyer":"Good Hands Craft Co.","useCase":"Mixed fabric remnants for workshop kits","category":"textile","quantity":25,"budgetMinor":10000,"location":"Austin, TX","notes":"Small bundles welcome; clean and dry only."},
+  {"id":"req-07","buyer":"Formline Displays","useCase":"Short wood pieces for retail display stands","category":"wood","quantity":70,"budgetMinor":24000,"location":"Dallas, TX","notes":"Consistent widths and untreated surfaces are useful."},
+  {"id":"req-08","buyer":"Shipshape Supply","useCase":"Low-cost paper cushioning for outbound parcels","category":"packaging","quantity":150,"budgetMinor":20000,"location":"San Antonio, TX","notes":"Prefer lightweight dry stock; estimate freight separately."},
+  {"id":"req-09","buyer":"Hearth & Hide","useCase":"Canvas fabric for reusable utility pouches","category":"textile","quantity":40,"budgetMinor":15000,"location":"Austin, TX","notes":"Durable woven material with no attached hardware."},
+  {"id":"req-10","buyer":"Turn & Grain","useCase":"Hardwood turning blanks for a maker studio","category":"wood","quantity":20,"budgetMinor":18000,"location":"Austin, TX","notes":"Dry small pieces; species must remain supplier-described."},
+  {"id":"req-11","buyer":"Boxroot Commerce","useCase":"Molded pulp or honeycomb product protection","category":"packaging","quantity":65,"budgetMinor":14000,"location":"Austin, TX","notes":"Shape can vary if the material can be trimmed."},
+  {"id":"req-12","buyer":"Atelier North","useCase":"Small batches of clean textile and wood for prototypes","category":"any","quantity":15,"budgetMinor":9000,"location":"Austin, TX","notes":"Buyer will inspect before scaling. Demo requirement only."}
+]
