@@ -1,0 +1,12 @@
+.env
+.DS_Store
+node_modules/
+.next/
+coverage/
+*.log
+data/runtime.json
+data/runtime.json.tmp
+data/images/
+.env
+.env.*
+!.env.example
