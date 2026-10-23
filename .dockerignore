@@ -1,0 +1,11 @@
+node_modules
+.git
+.env
+.env.*
+!.env.example
+data/runtime.json
+data/runtime.json.tmp
+data/images
+test
+docs
+*.log
