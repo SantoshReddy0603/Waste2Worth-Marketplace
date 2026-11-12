@@ -81,6 +81,17 @@ test("manual listings wait for the supplier, who can counter", async () => {
   assert.equal(countered.counterUnitMinor, 180);
 });
 
+test("a manual counter must sit between the offer and the list price", async () => {
+  const store = memoryStore([{ ...listing, autoNegotiate: false }]);
+  const engine = createDealEngine({ store });
+  const deal = await engine.makeOffer({ buyer, listingId: "ww-t1", quantity: 10, unitMinor: 150 });
+  await assert.rejects(engine.supplierDecision(deal, "COUNTERED", 150), /above the buyer's offer/);
+  await assert.rejects(engine.supplierDecision(deal, "COUNTERED", 120), /above the buyer's offer/);
+  await assert.rejects(engine.supplierDecision(deal, "COUNTERED", 201), /cannot exceed the list price/);
+  assert.equal(deal.status, "NEGOTIATING", "a rejected counter leaves the offer open");
+  assert.equal((await engine.supplierDecision(deal, "COUNTERED", 200)).status, "COUNTERED");
+});
+
 test("unsafe or review listings cannot receive offers", async () => {
   const store = memoryStore([{ ...listing, id: "ww-bad", description: "oil-soaked rags" }, { ...listing, id: "ww-rev", status: "review" }]);
   const engine = createDealEngine({ store });
