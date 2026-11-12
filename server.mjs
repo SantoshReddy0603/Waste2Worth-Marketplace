@@ -8,7 +8,7 @@ import { cleanText, createRateLimiter, httpError, jsonResponse, normalizeQuantit
 import { evaluateSafety, isListingPurchasable, listingText, permittedCategories } from "./lib/safety.mjs";
 import { available, deriveIntent, rankListings } from "./lib/match.mjs";
 import { createDealEngine, PAID_STATES } from "./lib/deals.mjs";
-import { createPayPal } from "./lib/paypal.mjs";
+import { createPayPal, EXPIRABLE_ORDER_STATES } from "./lib/paypal.mjs";
 import { createStore } from "./lib/store.mjs";
 import { createSessions, PERSONAS } from "./lib/auth.mjs";
 import { aiConfigFromEnv, createAI } from "./lib/ai.mjs";
@@ -496,6 +496,11 @@ async function expireStaleReservations() {
   const cutoff = Date.now() - RESERVATION_TTL_MS;
   for (const deal of store.list("deals")) {
     if (["ACCEPTED", "PAYMENT_PENDING"].includes(deal.status) && Date.parse(deal.updatedAt || deal.createdAt) < cutoff) {
+      // The buyer may already have approved in PayPal; let the capture or webhook finish instead.
+      if (deal.status === "PAYMENT_PENDING" && deal.mode === "paypal" && deal.paypal?.orderId && paypal.enabled) {
+        const orderStatus = await paypal.orderStatus(deal.paypal.orderId).catch(() => "UNKNOWN");
+        if (!EXPIRABLE_ORDER_STATES.has(orderStatus)) continue;
+      }
       await deals.transition(deal, "CANCELLED", "system", `Reservation expired after ${RESERVATION_TTL_MS / 60_000} minutes without payment; stock released.`).catch((error) => console.error(`[deals] expiry ${deal.id}: ${error.message}`));
     }
   }

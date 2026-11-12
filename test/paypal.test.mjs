@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createPayPal } from "../lib/paypal.mjs";
+import { createPayPal, EXPIRABLE_ORDER_STATES } from "../lib/paypal.mjs";
 import { createSessions } from "../lib/auth.mjs";
 
 const deal = { id: "D-TEST0001", quantity: 100, unit: "kg", listingTitle: "Cotton", supplierName: "S", unitMinor: 110, materialMinor: 11000, freightMinor: 3800, totalMinor: 14800, platformFeeMinor: 740, supplierNetMinor: 14060, paypal: { orderId: "ORDER1" } };
@@ -50,6 +50,19 @@ test("webhook captures are reconciled on status, amount, currency and payee", ()
   assert.equal(paypal.reconcileCaptureResource(deal, resource({ amount: { currency_code: "EUR", value: "148.00" } })), false);
   assert.equal(paypal.reconcileCaptureResource(deal, resource({ amount: { currency_code: "USD", value: "14.80" } })), false);
   assert.equal(paypal.reconcileCaptureResource(deal, resource({ payee: { merchant_id: "SOMEONE_ELSE" } })), false);
+});
+
+test("order status tells the reservation sweep whether an order can expire", async () => {
+  const { fetchImpl } = mockFetch({ "GET /v2/checkout/orders/APPROVED1": () => ({ id: "APPROVED1", status: "APPROVED" }) });
+  const paypal = createPayPal({ ...config, fetchImpl });
+  const approved = await paypal.orderStatus("APPROVED1");
+  assert.equal(approved, "APPROVED");
+  assert.equal(EXPIRABLE_ORDER_STATES.has(approved), false, "approved orders are left to capture");
+  const missing = await paypal.orderStatus("EXPIRED1");
+  assert.equal(missing, "GONE");
+  assert.equal(EXPIRABLE_ORDER_STATES.has(missing), true);
+  const down = createPayPal({ ...config, fetchImpl: async (url) => (url.endsWith("/oauth2/token") ? new Response(JSON.stringify({ access_token: "t", expires_in: 3600 })) : new Response("{}", { status: 503 })) });
+  await assert.rejects(down.orderStatus("ANY"), "an outage is not treated as an expired order");
 });
 
 test("payout sends the supplier net amount to the receiver", async () => {
