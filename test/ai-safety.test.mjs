@@ -55,6 +55,26 @@ const catalog = [
   { id: "b", title: "Pine trim", category: "wood", subtype: "Pine", description: "Untreated", uses: ["small furniture"], unit: "kg", quantity: 200, reserved: 0, priceMinor: 85, freightMinor: 5200, location: "Dallas, TX", condition: "Clean · untreated", status: "active", supplier: "S2", autoNegotiate: true },
 ];
 
+test("a rate-limited AI call is retried once after the provider's retry-after", async () => {
+  const waits = [];
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    if (calls === 1) return new Response(JSON.stringify({ error: { message: "rate limited" } }), { status: 429, headers: { "retry-after": "2" } });
+    return new Response(JSON.stringify({ choices: [{ message: { content: "{\"ok\":true}" } }] }), { status: 200 });
+  };
+  const ai = createAI({ enabled: true, provider: "groq", baseUrl: "https://example.test/v1", model: "m", apiKey: "k" }, { fetchImpl, sleep: async (ms) => waits.push(ms) });
+  assert.deepEqual(await ai.chatJson({ messages: [] }), { ok: true });
+  assert.equal(calls, 2);
+  assert.deepEqual(waits, [2000]);
+
+  calls = 0;
+  const alwaysBusy = createAI({ enabled: true, provider: "groq", baseUrl: "https://example.test/v1", model: "m", apiKey: "k" }, { fetchImpl: async () => { calls += 1; return new Response("{}", { status: 503, headers: { "retry-after": "60" } }); }, sleep: async (ms) => waits.push(ms) });
+  await assert.rejects(alwaysBusy.chat({ messages: [] }), /returned 503/);
+  assert.equal(calls, 2, "only one retry");
+  assert.equal(waits.at(-1), 3000, "the wait is capped");
+});
+
 test("intent parsing and ranking respect family, quantity and budget", () => {
   const intent = deriveIntent("200 kg cotton for protective packaging under $300 near Austin");
   assert.equal(intent.category, "textile");
