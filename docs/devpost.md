@@ -26,7 +26,7 @@ Small manufacturers pay to landfill clean offcuts that other small makers would 
 - **PayPal:** Orders v2 with the JS SDK Buttons, idempotent create and capture, capture reconciliation, the Refunds API, the Payouts API with status polling, and webhook signature verification.
 - **Deals:** one deal state machine with stock reservation and a full audit log of who did what (buyer, buyer agent, supplier agent, PayPal, webhook).
 - **Storage:** Postgres (Neon) or a JSON file, including photos. Hosted on Render.
-- **Tests:** 22 `node --test` tests, covering the state machine, the safety gate, the agent with mocked LLM tool calls, and PayPal against a mocked API.
+- **Tests:** 31 `node --test` tests, covering the state machine, the safety gate, the agent with mocked LLM tool calls, PayPal against a mocked API, storage and rate limiting. GitHub Actions runs them on Node 20 and 22.
 
 ## Challenges we ran into
 - **Keeping an LLM inside hard limits.** We moved the budget, the safety gate and payee checks out of the prompt and into server code the model can't override. The agent can propose; only code and the human can commit money.
@@ -46,7 +46,7 @@ Agentic commerce needs a clear split. The model decides *what to offer*. Determi
 - Recurring sourcing agents that watch for new lots that match a buyer's needs.
 
 ## Built with
-paypal-orders-v2, paypal-payouts, paypal-refunds, paypal-webhooks, paypal-js-sdk, groq, gpt-oss, qwen, ollama, node.js, postgresql, neon, render, javascript
+paypal-orders-v2, paypal-payouts, paypal-refunds, paypal-webhooks, paypal-js-sdk, github-actions, groq, gpt-oss, qwen, ollama, node.js, postgresql, neon, render, javascript
 
 ## Tools section (required by the rules)
 - **PayPal Orders v2 and JS SDK Buttons:** the buyer approves the negotiated amount, and the server captures it and reconciles the amount, currency and payee.
@@ -59,5 +59,6 @@ paypal-orders-v2, paypal-payouts, paypal-refunds, paypal-webhooks, paypal-js-sdk
 - **Render and Neon:** hosting and Postgres persistence.
 
 ## Testing instructions for judges
+- **Code:** https://github.com/SantoshReddy0603/Waste2Worth-Marketplace
 - **Hosted demo:** `<RENDER_URL>`. The PayPal Sandbox buyer login is `<SANDBOX_BUYER_EMAIL>` / `<SANDBOX_BUYER_PASSWORD>`.
 - **Run it locally:** follow the README (`npm install && npm start`). It works with no keys, using the rules agent and clearly marked demo payments.
