@@ -438,7 +438,7 @@ async function handleWebhook(request, response) {
   }
   if (deal) {
     deals.addEvent(deal, "paypal-webhook", "WEBHOOK", `${event.event_type} (${event.id})`);
-    if (event.event_type === "PAYMENT.CAPTURE.COMPLETED" && deal.status === "PAYMENT_PENDING" && resource.amount?.value === (deal.totalMinor / 100).toFixed(2)) {
+    if (event.event_type === "PAYMENT.CAPTURE.COMPLETED" && deal.status === "PAYMENT_PENDING" && paypal.reconcileCaptureResource(deal, resource)) {
       deal.paypal.captureId = resource.id;
       await deals.transition(deal, "PAID_HELD", "paypal-webhook", "Capture confirmed by verified webhook.");
     } else if (event.event_type === "PAYMENT.CAPTURE.REFUNDED" && deal.status === "PAID_HELD") {

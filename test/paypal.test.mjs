@@ -41,6 +41,17 @@ test("capture is accepted only when amount, currency and payee match", async () 
   assert.equal(paypal.reconcileCapture(deal, capture("148.00", "SOMEONE_ELSE")).ok, false);
 });
 
+test("webhook captures are reconciled on status, amount, currency and payee", () => {
+  const paypal = createPayPal({ ...config, fetchImpl: async () => new Response("{}") });
+  const resource = (overrides = {}) => ({ id: "CAP1", status: "COMPLETED", amount: { currency_code: "USD", value: "148.00" }, payee: { merchant_id: "MERCHANT" }, ...overrides });
+  assert.equal(paypal.reconcileCaptureResource(deal, resource()), true);
+  assert.equal(paypal.reconcileCaptureResource(deal, resource({ payee: undefined })), true, "payee is optional in webhook payloads");
+  assert.equal(paypal.reconcileCaptureResource(deal, resource({ status: "PENDING" })), false);
+  assert.equal(paypal.reconcileCaptureResource(deal, resource({ amount: { currency_code: "EUR", value: "148.00" } })), false);
+  assert.equal(paypal.reconcileCaptureResource(deal, resource({ amount: { currency_code: "USD", value: "14.80" } })), false);
+  assert.equal(paypal.reconcileCaptureResource(deal, resource({ payee: { merchant_id: "SOMEONE_ELSE" } })), false);
+});
+
 test("payout sends the supplier net amount to the receiver", async () => {
   const { fetchImpl, calls } = mockFetch({ "POST /v1/payments/payouts": () => ({ batch_header: { payout_batch_id: "BATCH1", batch_status: "PENDING" } }) });
   const paypal = createPayPal({ ...config, fetchImpl });
