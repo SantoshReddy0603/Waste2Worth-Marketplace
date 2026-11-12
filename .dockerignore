@@ -9,3 +9,4 @@ data/images
 test
 docs
 *.log
+.github
