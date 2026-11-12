@@ -1,5 +1,7 @@
 # Waste2Worth: Surplus Agent
 
+[![test](https://github.com/SantoshReddy0603/Waste2Worth-Marketplace/actions/workflows/test.yml/badge.svg)](https://github.com/SantoshReddy0603/Waste2Worth-Marketplace/actions/workflows/test.yml)
+
 **An AI procurement agent that sources reusable industrial surplus, negotiates with the supplier's agent, and settles through PayPal: the buyer pays, the platform holds the funds, and the supplier is paid out when pickup is confirmed.**
 
 Small manufacturers throw away clean offcuts (fabric, untreated wood, kraft board) that other small businesses would pay for, but nobody has time to find the material, haggle over a lot of 200 kg, and trust a stranger with payment. Waste2Worth turns that into one sentence:
@@ -48,7 +50,7 @@ flowchart LR
 - `lib/match.mjs`, `lib/safety.mjs`: transparent scoring and the safety gate
 - `lib/store.mjs`: JSON file locally, Postgres (Neon) when `DATABASE_URL` is set, images included
 - `public/`: no-build vanilla JS front end
-- `test/`: `node --test` suites for the state machine, safety, the agent (with mocked LLM tool calls) and PayPal (mocked API)
+- `test/`: `node --test` suites for the state machine, safety, the agent (with mocked LLM tool calls), PayPal (mocked API), storage and rate limiting
 
 ## Tools used
 
@@ -70,10 +72,10 @@ No paid AI is required. Without any key the app runs a deterministic rules agent
 Requires Node.js 20+.
 
 ```bash
-git clone https://github.com/car-ui/waste2worth && cd waste2worth
+git clone https://github.com/SantoshReddy0603/Waste2Worth-Marketplace && cd Waste2Worth-Marketplace
 npm install
 npm start            # http://localhost:4173
-npm test             # 22 tests
+npm test             # 31 tests
 npm run reset        # wipe deals/listings (local file or Neon) before a demo
 ```
 
@@ -113,7 +115,19 @@ Then add `https://<host>/api/paypal/webhook` as a webhook in the PayPal app and 
 - **Payouts:** one Sandbox payout receiver stands in for all suppliers.
 - **Safety and composition:** the safety gate is a screening aid, not certification. Buyers confirm the material at pickup before releasing funds.
 
+## Team
+
+| Member | Focus |
+|---|---|
+| Cheruku Sri Charan Reddy | Core backend: deal state machine, stock reservation, storage, HTTP server |
+| Kartheek Talluri | PayPal integration: Orders v2, capture reconciliation, Refunds, Payouts, webhooks, sessions |
+| Miyyapuram Sai Varun | AI: buyer agent and budget guard, LLM client, matching, safety gate, rate limiting |
+| Syamala Venkat Santosh Reddy | Front end, seed data, deployment (Docker, Render, Hugging Face), CI and docs |
+
 ## What was built during the hackathon
+
+Development started in [car-ui/waste2worth](https://github.com/car-ui/waste2worth) and moved to this repository for submission.
+
 
 The repo began on Oct 23, 2026 as a single-flow prototype: a rule matcher, one-merchant Sandbox checkout and local receipts. During the submission period it gained:
 - the LLM buyer agent with its budget guard, and the supplier negotiation agent;
