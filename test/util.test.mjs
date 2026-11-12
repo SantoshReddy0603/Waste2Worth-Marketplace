@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createRateLimiter } from "../lib/util.mjs";
+import { clientAddress, createRateLimiter } from "../lib/util.mjs";
 
 test("rate limiter allows up to the limit per window and then resets", () => {
   let time = 0;
@@ -21,4 +21,11 @@ test("rate limiter forgets clients whose window has expired", () => {
   time = 2500;
   allow("fresh");
   assert.equal(allow.size(), 1);
+});
+
+test("client address ignores spoofable forwarded headers unless a proxy is trusted", () => {
+  const request = { headers: { "x-forwarded-for": "1.1.1.1, 10.0.0.7" }, socket: { remoteAddress: "10.0.0.1" } };
+  assert.equal(clientAddress(request), "10.0.0.1");
+  assert.equal(clientAddress(request, true), "10.0.0.7", "the entry added by our proxy, not the client's");
+  assert.equal(clientAddress({ headers: {}, socket: { remoteAddress: "10.0.0.1" } }, true), "10.0.0.1");
 });

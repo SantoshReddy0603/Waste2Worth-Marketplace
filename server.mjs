@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
-import { cleanText, createRateLimiter, httpError, jsonResponse, normalizeQuantity, nowIso, readJsonBody } from "./lib/util.mjs";
+import { cleanText, clientAddress, createRateLimiter, httpError, jsonResponse, normalizeQuantity, nowIso, readJsonBody } from "./lib/util.mjs";
 import { evaluateSafety, isListingPurchasable, listingText, permittedCategories } from "./lib/safety.mjs";
 import { available, deriveIntent, rankListings } from "./lib/match.mjs";
 import { createDealEngine, PAID_STATES } from "./lib/deals.mjs";
@@ -34,6 +34,7 @@ const PORT = Number.parseInt(process.env.PORT || "4173", 10);
 const FEE_BPS = Number.parseInt(process.env.PLATFORM_FEE_BPS || "500", 10);
 const SUPPLIER_PAYOUT_EMAIL = process.env.SUPPLIER_PAYOUT_EMAIL || "";
 const SECURE_COOKIES = process.env.NODE_ENV === "production";
+const TRUST_PROXY = process.env.TRUST_PROXY === "1" || process.env.TRUST_PROXY === "true";
 
 const paypal = createPayPal({
   clientId: process.env.PAYPAL_CLIENT_ID || "",
@@ -80,7 +81,7 @@ function publicDeal(deal) {
 }
 
 function clientKey(request) {
-  return String(request.headers["x-forwarded-for"] || request.socket.remoteAddress || "local").split(",")[0].trim();
+  return clientAddress(request, TRUST_PROXY);
 }
 
 function requireRole(persona, role) {

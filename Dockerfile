@@ -2,7 +2,7 @@
 FROM node:22-slim
 
 WORKDIR /app
-ENV NODE_ENV=production PORT=7860
+ENV NODE_ENV=production PORT=7860 TRUST_PROXY=1
 
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
