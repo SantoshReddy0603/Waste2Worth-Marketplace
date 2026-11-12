@@ -10,7 +10,17 @@ Small manufacturers throw away clean offcuts (fabric, untreated wood, kraft boar
 
 The **Surplus Agent** searches the marketplace and opens an offer below list price. The supplier's **negotiation agent** answers inside the floor the supplier set. The buyer gets a negotiated deal to approve in **PayPal**. Money is captured and held, released to the supplier with the **PayPal Payouts API** after pickup, or refunded through the **Refunds API** if the material isn't as described.
 
-Built for the [PayPal AI Hackathon](https://paypalaihackathon.devpost.com/). MIT licensed.
+Built for the [PayPal AI Hackathon](https://paypalaihackathon.devpost.com/). MIT licensed. **Live demo: https://waste2worth-ea9r.onrender.com/**
+
+## Live demo
+
+**https://waste2worth-ea9r.onrender.com/**
+
+- Hosted on Render (free web service) from this repository, with a Neon Postgres database for listings, deals, audit events and photos.
+- PayPal runs in **Sandbox** mode, so no real money moves. Pay with a PayPal Sandbox personal account.
+- The AI agent and vision drafts run on Groq's free tier with open-weight models.
+- The free instance sleeps when idle, so the first load can take about 30 seconds.
+- Health check: [/api/health](https://waste2worth-ea9r.onrender.com/api/health)
 
 ## What it does
 
@@ -23,7 +33,7 @@ Built for the [PayPal AI Hackathon](https://paypalaihackathon.devpost.com/). MIT
 | **Safety that AI can't loosen** | The server's rule gate always runs. The AI can only make a listing *stricter* (review or block), never approve something the rules block. |
 | **AI matching** | An LLM extracts intent (family, quantity, budget, location, use) and re-ranks rule-scored listings with plain-language reasons. |
 | **One audited state machine** | `NEGOTIATING → COUNTERED/ACCEPTED → PAYMENT_PENDING → PAID_HELD → PICKUP_CONFIRMED → PAYOUT_SENT → SUPPLIER_PAID`, plus `REFUNDED`, `CANCELLED` and `RECONCILIATION_REQUIRED`. Stock is reserved on acceptance. Every transition is logged with its actor (buyer, buyer-agent, supplier-agent, paypal, paypal-webhook). |
-| **Honest impact** | The Impact page counts only material in *paid* deals and keeps catalog potential and demo payments clearly separate. It makes no carbon claims. |
+| **Impact reporting** | The Impact page counts only material in *paid* deals and keeps catalog potential and demo payments clearly separate. It makes no carbon claims. |
 
 ## Architecture
 
@@ -108,7 +118,7 @@ Both options use a free [Neon](https://neon.tech) Postgres database. Copy its co
 
 Then add `https://<host>/api/paypal/webhook` as a webhook in the PayPal app and set `PAYPAL_WEBHOOK_ID`.
 
-## Boundaries (stated honestly)
+## Limitations
 
 - **Demo data:** listings, suppliers, prices and freight are synthetic. Freight is a comparison estimate, not a carrier quote.
 - **Personas:** two demo personas with signed session cookies stand in for real accounts. The server enforces their roles (only the buyer can pay or confirm pickup; only the owning supplier can answer offers), but there is no sign-up or password.
@@ -126,10 +136,7 @@ Then add `https://<host>/api/paypal/webhook` as a webhook in the PayPal app and 
 
 ## What was built during the hackathon
 
-Development started in [car-ui/waste2worth](https://github.com/car-ui/waste2worth) and moved to this repository for submission.
-
-
-The repo began on Oct 23, 2026 as a single-flow prototype: a rule matcher, one-merchant Sandbox checkout and local receipts. During the submission period it gained:
+The project began on Oct 23, 2026 as a single-flow prototype: a rule matcher, one-merchant Sandbox checkout and local receipts. During the submission period it gained:
 - the LLM buyer agent with its budget guard, and the supplier negotiation agent;
 - the deal state machine with stock reservation and an audit log;
 - PayPal Payouts, Refunds and webhook verification;

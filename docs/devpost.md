@@ -60,5 +60,5 @@ paypal-orders-v2, paypal-payouts, paypal-refunds, paypal-webhooks, paypal-js-sdk
 
 ## Testing instructions for judges
 - **Code:** https://github.com/SantoshReddy0603/Waste2Worth-Marketplace
-- **Hosted demo:** `<RENDER_URL>`. The PayPal Sandbox buyer login is `<SANDBOX_BUYER_EMAIL>` / `<SANDBOX_BUYER_PASSWORD>`.
+- **Hosted demo:** https://waste2worth-ea9r.onrender.com/. The PayPal Sandbox buyer login is `<SANDBOX_BUYER_EMAIL>` / `<SANDBOX_BUYER_PASSWORD>`.
 - **Run it locally:** follow the README (`npm install && npm start`). It works with no keys, using the rules agent and clearly marked demo payments.
