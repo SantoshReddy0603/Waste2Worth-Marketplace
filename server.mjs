@@ -501,7 +501,12 @@ async function expireStaleReservations() {
 
 async function route(request, response, url) {
   if (url.pathname.startsWith("/api/")) await expireStaleReservations();
-  const pathname = decodeURIComponent(url.pathname);
+  let pathname;
+  try {
+    pathname = decodeURIComponent(url.pathname);
+  } catch {
+    return jsonResponse(response, 400, { error: "Malformed URL." });
+  }
   const method = request.method;
   const persona = sessions.persona(request);
 
