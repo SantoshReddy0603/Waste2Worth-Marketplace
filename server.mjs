@@ -379,6 +379,8 @@ async function handleDealAction(request, response, persona, id, action) {
       if (PAID_STATES.has(deal.status)) break;
       if (deal.status !== "PAYMENT_PENDING") throw httpError(409, "This deal has no PayPal order awaiting capture.");
       const result = await paypal.captureOrder(deal);
+      // A verified webhook can record the capture while this request is still in flight.
+      if (PAID_STATES.has(deal.status)) break;
       if (!result.ok) {
         await deals.transition(deal, "RECONCILIATION_REQUIRED", "platform", `Capture did not match the expected amount, currency or payee (status ${result.captureStatus}).`);
         throw httpError(409, "PayPal returned a capture that needs reconciliation. No paid receipt was recorded.");
