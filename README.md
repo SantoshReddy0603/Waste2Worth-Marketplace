@@ -19,8 +19,12 @@ Built for the [PayPal AI Hackathon](https://paypalaihackathon.devpost.com/). MIT
 - Hosted on Render (free web service) from this repository, with a Neon Postgres database for listings, deals, audit events and photos.
 - PayPal runs in **Sandbox** mode, so no real money moves. Pay with a PayPal Sandbox personal account.
 - The AI agent and vision drafts run on Groq's free tier with open-weight models.
-- The free instance sleeps when idle, so the first load can take about 30 seconds.
+- The free instance sleeps when idle, so the first load can take up to a minute.
 - Health check: [/api/health](https://waste2worth-ea9r.onrender.com/api/health)
+
+![Discover: the buyer brief and the Surplus Agent](docs/screenshots/discover.jpg)
+
+![Deals: agent-negotiated deals through PayPal capture, pickup, payout and refund](docs/screenshots/deals.jpg)
 
 ## What it does
 
@@ -107,16 +111,18 @@ With no `.env` the app runs fully: a rules-based agent, and demo payments that a
 
 ## Deploy (free)
 
-Both options use a free [Neon](https://neon.tech) Postgres database. Copy its connection string for `DATABASE_URL`.
+The live demo runs on Render. Both options below use a free [Neon](https://neon.tech) Postgres database; copy its connection string for `DATABASE_URL`.
 
-**Hugging Face Spaces (Docker, no card):**
+**Render (used for the live demo):**
+1. In the Render dashboard, go to **New → Blueprint** and pick this repo. `render.yaml` defines a free Node 22 web service with a health check on `/api/health` and generates `SESSION_SECRET`.
+2. Fill in the secrets it asks for: `AI_API_KEY`, `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_MERCHANT_ID`, `SUPPLIER_PAYOUT_EMAIL` and `DATABASE_URL`. Any left empty fall back to the rules agent or demo payments.
+3. Click **Apply**. The build takes a few minutes, and pushes to `main` redeploy automatically.
+4. Add `https://<your-service>.onrender.com/api/paypal/webhook` as a webhook in the PayPal app, set `PAYPAL_WEBHOOK_ID` in **Environment**, and redeploy.
+
+**Hugging Face Spaces (Docker, alternative):**
 1. Create a Docker Space (Blank template, CPU basic).
-2. In the Space settings, add secrets: `AI_API_KEY`, `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_MERCHANT_ID`, `SUPPLIER_PAYOUT_EMAIL`, `DATABASE_URL` and `SESSION_SECRET`.
+2. In the Space settings, add the same secrets plus `SESSION_SECRET`.
 3. Run `git remote add hf https://huggingface.co/spaces/<user>/<space>` and then `bash scripts/deploy-hf.sh`. The script adds the Space config to the README in a throwaway commit, so the GitHub README stays clean.
-
-**Render:** go to **New → Blueprint** and pick this repo. `render.yaml` defines the service; fill in the `sync: false` env vars in the dashboard.
-
-Then add `https://<host>/api/paypal/webhook` as a webhook in the PayPal app and set `PAYPAL_WEBHOOK_ID`.
 
 ## Limitations
 
